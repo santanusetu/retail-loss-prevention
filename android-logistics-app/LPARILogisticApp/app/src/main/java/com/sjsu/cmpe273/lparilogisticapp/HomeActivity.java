@@ -3,20 +3,19 @@ package com.sjsu.cmpe273.lparilogisticapp;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sjsu.cmpe273.lparilogisticapp.fragments.FragmentAnalytics;
-import com.sjsu.cmpe273.lparilogisticapp.fragments.FragmentShipment;
 import com.sjsu.cmpe273.lparilogisticapp.fragments.FragmentShipmentCompleted;
 import com.sjsu.cmpe273.lparilogisticapp.fragments.FragmentShipmentLead;
 
@@ -31,6 +30,9 @@ public class HomeActivity extends AppCompatActivity {
 
     // TODO: changing for testing -- santanu
     public static boolean isLoggedIn = false;
+
+    /** Set by the signature screen: after a delivery, clear the delivery flow and show Completed. */
+    public static final String EXTRA_SHOW_COMPLETED = "showCompleted";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
         // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.setDrawerListener(drawerToggle);
+        mDrawer.addDrawerListener(drawerToggle);
 
 
         // Find our navigation view and Setup drawer view
@@ -67,8 +69,10 @@ public class HomeActivity extends AppCompatActivity {
        // FragmentShipment shipmentFragment = new FragmentShipment();
        // setHomeFragment(shipmentFragment);
 
-        FragmentShipmentLead shipmentFragment = new FragmentShipmentLead();
-        setHomeFragment(shipmentFragment);
+        // Only on a fresh start; after rotation the fragment manager restores the screen itself
+        if (savedInstanceState == null) {
+            setHomeFragment(new FragmentShipmentLead());
+        }
 
 
         //floating action button
@@ -82,6 +86,15 @@ public class HomeActivity extends AppCompatActivity {
         });*/
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getBooleanExtra(EXTRA_SHOW_COMPLETED, false)) {
+            getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            selectDrawerItem(nvDrawer.getMenu().findItem(R.id.nav_second_fragment));
+        }
+    }
 
     /*
        Function that sets the initial Fragment in Screen
@@ -120,23 +133,15 @@ public class HomeActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
 
+        // Resource IDs are not compile-time constants under current Android tooling, so no switch
         Class fragmentClass;
-        switch (menuItem.getItemId()) {
-            case R.id.nav_first_fragment:
-                System.out.println("@@@ nav_first_fragment ");
-                fragmentClass = FragmentShipmentLead.class;
-                break;
-            case R.id.nav_second_fragment:
-                System.out.println("@@@ nav_second_fragment ");
-                fragmentClass = FragmentShipmentCompleted.class;
-                break;
-            case R.id.nav_third_fragment:
-                System.out.println("@@@ nav_third_fragment ");
-                fragmentClass = FragmentAnalytics.class;
-                break;
-            default:
-                System.out.println("@@@ default ");
-                fragmentClass = FragmentAnalytics.class;
+        int id = menuItem.getItemId();
+        if (id == R.id.nav_first_fragment) {
+            fragmentClass = FragmentShipmentLead.class;
+        } else if (id == R.id.nav_second_fragment) {
+            fragmentClass = FragmentShipmentCompleted.class;
+        } else {
+            fragmentClass = FragmentAnalytics.class;
         }
 
         try {

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +23,16 @@ import java.util.ArrayList;
 
 
 public class FragmentItemDelivery extends Fragment implements View.OnClickListener{
+
+    private static final String ARG_DROP_NO = "dropNo";
+
+    public static FragmentItemDelivery newInstance(String dropNo) {
+        Bundle args = new Bundle();
+        args.putString(ARG_DROP_NO, dropNo);
+        FragmentItemDelivery fragment = new FragmentItemDelivery();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     RecyclerView recyclerView;
 
@@ -85,6 +95,7 @@ public class FragmentItemDelivery extends Fragment implements View.OnClickListen
                 //  Toast.makeText(v.getContext(), "Delivery Item is ready ", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(v.getContext(), SignatureActivity.class);
+                intent.putExtra(SignatureActivity.EXTRA_DROP_NO, requireArguments().getString(ARG_DROP_NO));
                 startActivity(intent);
 
 
@@ -100,12 +111,12 @@ public class FragmentItemDelivery extends Fragment implements View.OnClickListen
         super.onActivityResult(requestCode, resultCode, data);
 
         //Toast.makeText(getActivity(), " Scanned ", Toast.LENGTH_SHORT).show();
-        if (requestCode == 12345) {
+        // data is null when the driver backs out of the scanner without scanning
+        if (requestCode == 12345 && resultCode == android.app.Activity.RESULT_OK && data != null) {
 
             // Handle successful scan
             //  Toast.makeText(getActivity(), "Toast Scanned QWERTY -> ", Toast.LENGTH_SHORT).show();
 
-            System.out.println("@@@@ adapter position " + data.getIntExtra("position", 0));
             int pos = data.getIntExtra("position",0);
             item_list.get(pos).setIsScanned(true);
             adapter.notifyDataSetChanged();

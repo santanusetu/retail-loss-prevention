@@ -3,12 +3,20 @@ package com.sjsu.cmpe273.lparilogisticapp.pojo;
 
 public class TripDetail {
 
+    public static final String STATUS_PENDING = "No";
+    public static final String STATUS_DELIVERED = "Yes";
+
+    public static final String RISK_LOW = "low";
+    public static final String RISK_MEDIUM = "medium";
+    public static final String RISK_HIGH = "high";
+
     private String dropNo;
     private String deliveryTime;
     private String customerName;
     private String custAddress;
     private String phnNo;
     private String completionStatus;
+    private String riskLevel;
 
 
     public String getDropNo() {
@@ -71,4 +79,16 @@ public class TripDetail {
     }
 
 
+
+    public String getRiskLevel() {
+        return riskLevel;
+    }
+
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
+    }
+
+    public boolean isDelivered() {
+        return STATUS_DELIVERED.equalsIgnoreCase(completionStatus);
+    }
 }

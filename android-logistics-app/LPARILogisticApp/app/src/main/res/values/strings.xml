@@ -9,4 +9,22 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="no_app_for_action">No app available for this action</string>
+    <string name="trips_empty">No shipments here right now</string>
+    <string name="shipment_details">Shipment Details</string>
+    <string name="priority_level">Priority level: %1$s</string>
+    <string name="camera_denied">Camera permission is needed to scan packages</string>
+    <string name="enter_code_manually">Enter code manually</string>
+    <string name="package_code">Package code</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="signature_saved">Signature saved. Delivery complete.</string>
+    <string name="signature_failed">Could not save the signature</string>
+    <string name="creating_account">Creating account…</string>
+    <string name="signup_failed">Sign-up failed. Please try again.</string>
+    <string name="authenticating">Signing in…</string>
+    <string name="login_failed">Login failed. Check your email and password.</string>
+    <string name="account_created">Account created. Please sign in.</string>
+    <string name="item_scanned">Scanned ✓</string>
+    <string name="item_needs_scan">Needs scanning before proceeding</string>
 </resources>

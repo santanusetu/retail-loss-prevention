@@ -1,0 +1,12 @@
+{
+  "TripDetails": [
+    {"dropNo": "Drop 1", "deliveryTime": "9:30 AM", "customerName": "Maya Patel", "custAddress": "1 Washington Square, San Jose, CA 95192", "phnNo": "408-555-0142", "completionStatus": "No", "riskLevel": "low"},
+    {"dropNo": "Drop 2", "deliveryTime": "10:15 AM", "customerName": "Daniel Kim", "custAddress": "150 E San Fernando St, San Jose, CA 95112", "phnNo": "408-555-0117", "completionStatus": "No", "riskLevel": "low"},
+    {"dropNo": "Drop 3", "deliveryTime": "11:00 AM", "customerName": "Priya Raman", "custAddress": "200 E Santa Clara St, San Jose, CA 95113", "phnNo": "408-555-0165", "completionStatus": "No", "riskLevel": "medium"},
+    {"dropNo": "Drop 4", "deliveryTime": "11:45 AM", "customerName": "Carlos Rivera", "custAddress": "1 Paseo de San Antonio, San Jose, CA 95113", "phnNo": "408-555-0189", "completionStatus": "No", "riskLevel": "medium"},
+    {"dropNo": "Drop 5", "deliveryTime": "1:30 PM", "customerName": "Emily Chen", "custAddress": "300 Almaden Blvd, San Jose, CA 95110", "phnNo": "408-555-0123", "completionStatus": "No", "riskLevel": "high"},
+    {"dropNo": "Drop 6", "deliveryTime": "2:15 PM", "customerName": "Jordan Brooks", "custAddress": "408 Almaden Blvd, San Jose, CA 95110", "phnNo": "408-555-0198", "completionStatus": "No", "riskLevel": "high"},
+    {"dropNo": "Drop 7", "deliveryTime": "8:45 AM", "customerName": "Aisha Thomas", "custAddress": "55 S Market St, San Jose, CA 95113", "phnNo": "408-555-0104", "completionStatus": "Yes", "riskLevel": "low"},
+    {"dropNo": "Drop 8", "deliveryTime": "9:05 AM", "customerName": "Lucas Moreno", "custAddress": "180 Park Ave, San Jose, CA 95113", "phnNo": "408-555-0151", "completionStatus": "Yes", "riskLevel": "medium"}
+  ]
+}

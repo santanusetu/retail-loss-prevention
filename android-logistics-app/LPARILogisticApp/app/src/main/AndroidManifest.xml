@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sjsu.cmpe273.lparilogisticapp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.SEND_SMS" />
-
-
+    <!-- Calls and texts go through the dialer and messaging apps, so no phone or SMS permission is needed.
+         Directions open in Maps, which finds the driver's position itself, so no location permission either. -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/lparilogo"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -24,17 +17,17 @@
 
         <activity
             android:name=".HomeActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Dark" />
         <activity android:name=".SignUpActivity" android:theme="@style/AppTheme.Dark" />
-
         <activity android:name=".SimpleScannerActivity" android:theme="@style/AppTheme.Dark" />
         <activity android:name=".SignatureActivity" android:theme="@style/AppTheme.Dark" />
     </application>

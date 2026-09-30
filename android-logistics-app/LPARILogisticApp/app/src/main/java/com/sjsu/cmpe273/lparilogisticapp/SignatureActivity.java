@@ -1,178 +1,101 @@
 package com.sjsu.cmpe273.lparilogisticapp;
 
-
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.gcacace.signaturepad.views.SignaturePad;
-import com.sjsu.cmpe273.lparilogisticapp.fragments.FragmentShipment;
-import com.sjsu.cmpe273.lparilogisticapp.fragments.FragmentShipmentLowCaution;
+import com.sjsu.cmpe273.lparilogisticapp.data.TripRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
-public class SignatureActivity extends Activity{
+/** Captures the customer's signature as proof of delivery, then marks the drop delivered. */
+public class SignatureActivity extends AppCompatActivity {
 
+    public static final String EXTRA_DROP_NO = "dropNo";
 
-    private SignaturePad mSignaturePad;
-    private Button mClearButton;
-    private Button mSaveButton;
+    private static final String TAG = "SignatureActivity";
+
+    private SignaturePad signaturePad;
+    private Button clearButton;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signature);
 
-        mSignaturePad = (SignaturePad) findViewById(R.id.signature_pad);
-        mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
+        signaturePad = findViewById(R.id.signature_pad);
+        clearButton = findViewById(R.id.clear_button);
+        saveButton = findViewById(R.id.save_button);
+
+        signaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
             @Override
             public void onStartSigning() {
-               // Toast.makeText(getApplicationContext(), "OnStartSigning", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onSigned() {
-                mSaveButton.setEnabled(true);
-                mClearButton.setEnabled(true);
+                saveButton.setEnabled(true);
+                clearButton.setEnabled(true);
             }
 
             @Override
             public void onClear() {
-                mSaveButton.setEnabled(false);
-                mClearButton.setEnabled(false);
+                saveButton.setEnabled(false);
+                clearButton.setEnabled(false);
             }
         });
 
-        mClearButton = (Button) findViewById(R.id.clear_button);
-        mSaveButton = (Button) findViewById(R.id.save_button);
-
-        mClearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSignaturePad.clear();
+        clearButton.setOnClickListener(v -> signaturePad.clear());
+        saveButton.setOnClickListener(v -> {
+            String dropNo = getIntent().getStringExtra(EXTRA_DROP_NO);
+            if (saveProofOfDelivery(dropNo, signaturePad.getSignatureBitmap())) {
+                TripRepository.getInstance().markDelivered(dropNo);
+                Toast.makeText(this, R.string.signature_saved, Toast.LENGTH_SHORT).show();
+                Intent home = new Intent(this, HomeActivity.class);
+                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                home.putExtra(HomeActivity.EXTRA_SHOW_COMPLETED, true);
+                startActivity(home);
+                finish();
+            } else {
+                Toast.makeText(this, R.string.signature_failed, Toast.LENGTH_SHORT).show();
             }
-        });
-
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
-                if(addJpgSignatureToGallery(signatureBitmap)) {
-                    Toast.makeText(getApplicationContext(), "Signature Verified", Toast.LENGTH_SHORT).show();
-
-                    finishAllWorks();
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Unable to capture the signature", Toast.LENGTH_SHORT).show();
-                }
-                if(addSvgSignatureToGallery(mSignaturePad.getSignatureSvg())) {
-                 //   Toast.makeText(getApplicationContext(), "SVG Signature saved", Toast.LENGTH_SHORT).show();
-                    finishAllWorks();
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Unable to capture the SVG signature", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-
         });
     }
 
-
-
-    private void finishAllWorks() {
-        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
-
-        SharedPreferences prefs = getSharedPreferences("shipment_details_pref", Context.MODE_PRIVATE);
-        int tripDetailsPosition = prefs.getInt("tripDetailsPosition", 0);
-
-        System.out.println("@@@@@@ POSITION SIG " + tripDetailsPosition);
-        FragmentShipmentLowCaution.tripDetails.get(tripDetailsPosition).setCompletionStatus("Yes");
-
-//        for (int i=0; i <FragmentShipment.tripDetails.size(); i++){
-//            System.out.println("@@@@@@ tripDetails " + FragmentShipment.tripDetails.get(i).getCompletionStatus());
-//        }
-
-    }
-
-
-
-
-    public File getAlbumStorageDir(String albumName) {
-        // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), albumName);
-        if (!file.mkdirs()) {
-            Log.e("SignaturePad", "Directory not created");
+    /**
+     * Saves the signature in the app's private storage. The 2016 version wrote to the public
+     * Pictures folder, which Android 10+ blocks, so every save failed.
+     */
+    private boolean saveProofOfDelivery(String dropNo, Bitmap signature) {
+        File dir = new File(getFilesDir(), "proof-of-delivery");
+        if (!dir.exists() && !dir.mkdirs()) {
+            return false;
         }
-        return file;
-    }
+        String name = (dropNo == null ? "drop" : dropNo.replaceAll("[^A-Za-z0-9]", "_"))
+                + "_" + System.currentTimeMillis() + ".jpg";
 
-    public void saveBitmapToJPG(Bitmap bitmap, File photo) throws IOException {
-        Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(newBitmap);
+        Bitmap flattened = Bitmap.createBitmap(signature.getWidth(), signature.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(flattened);
         canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        OutputStream stream = new FileOutputStream(photo);
-        newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-        stream.close();
-    }
+        canvas.drawBitmap(signature, 0, 0, null);
 
-    public boolean addJpgSignatureToGallery(Bitmap signature) {
-        boolean result = false;
-        try {
-            File photo = new File(getAlbumStorageDir("SignaturePad"), String.format("Signature_%d.jpg", System.currentTimeMillis()));
-            saveBitmapToJPG(signature, photo);
-            scanMediaFile(photo);
-            result = true;
+        try (OutputStream out = new FileOutputStream(new File(dir, name))) {
+            return flattened.compress(Bitmap.CompressFormat.JPEG, 85, out);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Could not save signature", e);
+            return false;
         }
-        return result;
     }
-
-    private void scanMediaFile(File photo) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(photo);
-        mediaScanIntent.setData(contentUri);
-        getApplicationContext().sendBroadcast(mediaScanIntent);
-    }
-
-    public boolean addSvgSignatureToGallery(String signatureSvg) {
-        boolean result = false;
-        try {
-            File svgFile = new File(getAlbumStorageDir("SignaturePad"), String.format("Signature_%d.svg", System.currentTimeMillis()));
-            OutputStream stream = new FileOutputStream(svgFile);
-            OutputStreamWriter writer  = new OutputStreamWriter(stream);
-            writer.write(signatureSvg);
-            writer.close();
-            stream.flush();
-            stream.close();
-            scanMediaFile(svgFile);
-            result = true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
 }

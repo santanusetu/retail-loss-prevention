@@ -1,177 +1,117 @@
 package com.sjsu.cmpe273.lparilogisticapp;
 
-
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.sjsu.cmpe273.lparilogisticapp.pojo.Login;
+import com.sjsu.cmpe273.lparilogisticapp.data.ApiClient;
+import com.sjsu.cmpe273.lparilogisticapp.pojo.Credentials;
 import com.sjsu.cmpe273.lparilogisticapp.pojo.LoginData;
-import com.sjsu.cmpe273.lparilogisticapp.retrofit.RetrofitApi;
 
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-import retrofit.Call;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+/**
+ * Driver login. The 2016 version skipped the check entirely (a timer always "succeeded")
+ * and printed the password to the log.
+ */
+public class LoginActivity extends AppCompatActivity {
 
-
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
-
-
-public class LoginActivity extends Activity {
-
-    public static String API = "http://www.mocky.io"; //v2/571972dd2500000321856cbb
-    private static final String PREFERENCES = "login_pref";
-    SharedPreferences userSharedPref;
-    boolean userPresentFlag = false;
-
-    ProgressDialog  progressDialog;
-
-    private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    EditText emailText, passwordText;
-    Button loginButton;
-    TextView signUpLink;
-
-    String email;
-    String password;
+    private EditText emailText, passwordText;
+    private Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        setUpUI();
+        emailText = findViewById(R.id.etInputEmail);
+        passwordText = findViewById(R.id.etInputPassword);
+        loginButton = findViewById(R.id.btnLogin);
+        TextView signUpLink = findViewById(R.id.tvLinkSignup);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Log.i(TAG, "Login Button Pressed");
-                if (!validate()) {
-                    onLoginFailed();
-                    return;
-                }
-
-                loginButton.setEnabled(false);
-                progressDialog = new ProgressDialog(LoginActivity.this);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Authentication in Progress...");
-                progressDialog.show();
-
-                email = emailText.getText().toString();
-                password = passwordText.getText().toString();
-
-                //TODO: Implement own Login logic -- email and password is present
-                System.out.println(" Email " + email + " password " + password);
-
-
-                new android.os.Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO:On complete call either onLoginSuccess or onLoginFailed
-                        //if boolean Success
-
-                        //santanu --- commenting for time being
-                         onLoginSuccess();
-
-                        // else boolean notSuccess
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        loginButton.setOnClickListener(v -> {
+            if (validate()) {
+                login();
             }
         });
+        signUpLink.setOnClickListener(v ->
+                startActivityForResult(new Intent(this, SignUpActivity.class), REQUEST_SIGNUP));
+    }
 
-        signUpLink.setOnClickListener(new View.OnClickListener() {
+    private void login() {
+        loginButton.setEnabled(false);
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setIndeterminate(true);
+        progress.setMessage(getString(R.string.authenticating));
+        progress.show();
+
+        Credentials credentials = new Credentials(
+                emailText.getText().toString().trim(), passwordText.getText().toString());
+        ApiClient.get(this).login(credentials).enqueue(new Callback<LoginData>() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+            public void onResponse(@NonNull Call<LoginData> call, @NonNull Response<LoginData> response) {
+                progress.dismiss();
+                if (response.isSuccessful() && response.body() != null) {
+                    HomeActivity.isLoggedIn = true;
+                    finish();
+                } else {
+                    onLoginFailed();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LoginData> call, @NonNull Throwable t) {
+                progress.dismiss();
+                onLoginFailed();
             }
         });
     }
-
-
-
 
     private void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.login_failed, Toast.LENGTH_LONG).show();
         loginButton.setEnabled(true);
     }
-
-    private void onLoginSuccess() {
-        loginButton.setEnabled(true);
-        HomeActivity.isLoggedIn = true;
-        finish();
-    }
-
 
     private boolean validate() {
         boolean valid = true;
-        String email = emailText.getText().toString();
-        String password = passwordText.getText().toString();
-
-        if(email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            emailText.setError("Enter valid Email address");
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailText.getText().toString().trim()).matches()) {
+            emailText.setError("Enter a valid email address");
             valid = false;
-        }else{
+        } else {
             emailText.setError(null);
         }
-
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (passwordText.getText().toString().isEmpty()) {
+            passwordText.setError("Enter your password");
             valid = false;
         } else {
             passwordText.setError(null);
         }
-
         return valid;
-    }
-
-
-
-    private void setUpUI() {
-        emailText = (EditText)findViewById(R.id.etInputEmail);
-        passwordText = (EditText)findViewById(R.id.etInputPassword);
-        loginButton = (Button)findViewById(R.id.btnLogin);
-        signUpLink = (TextView)findViewById(R.id.tvLinkSignup);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_SIGNUP){
-            if(resultCode == RESULT_OK){
-                // TODO: Implement successful signup logic here -- We can have logic like authenticate via email - then login
-                // By default in the end we just finish the Activity and log them in automatically
-                this.finish();
-            }
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SIGNUP && resultCode == RESULT_OK) {
+            Toast.makeText(this, R.string.account_created, Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        // Login is required; leave the app rather than reveal the home screen
         moveTaskToBack(true);
     }
-
-
-
 }

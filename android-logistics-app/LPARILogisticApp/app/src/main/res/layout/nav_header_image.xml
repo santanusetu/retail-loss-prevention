@@ -16,7 +16,7 @@
         android:layout_marginTop="16dp"
         app:civ_border_color="#aaaaaa"
         app:civ_border_width="1dp"
-        android:src="@drawable/pic"/>
+        android:src="@drawable/lparilogo"/>
 
     <TextView
         android:id="@+id/profile_name"
@@ -25,7 +25,7 @@
         android:layout_below="@+id/profile_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
-        android:text="Santanu Chakraborty"
+        android:text="Demo Driver"
         android:textSize="14sp" />
 
     <TextView
@@ -36,5 +36,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
-        android:text="santanuchakraborty@gmail.com" />
+        android:text="demo.driver@example.com" />
 </RelativeLayout>

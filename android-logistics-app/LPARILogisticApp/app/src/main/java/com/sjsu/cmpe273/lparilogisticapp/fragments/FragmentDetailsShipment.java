@@ -1,19 +1,17 @@
 package com.sjsu.cmpe273.lparilogisticapp.fragments;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -22,204 +20,139 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
+import com.sjsu.cmpe273.lparilogisticapp.BuildConfig;
 import com.sjsu.cmpe273.lparilogisticapp.R;
-import com.sjsu.cmpe273.lparilogisticapp.util.GPSTracker;
+import com.sjsu.cmpe273.lparilogisticapp.pojo.TripDetail;
 
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-
+/** One drop: customer, address, a map preview, and the start/end of the delivery. */
 public class FragmentDetailsShipment extends Fragment {
 
-    double srcLatitude;
-    double srcLongitude;
+    private static final String TAG = "DetailsShipment";
+    private static final String ARG_DROP_NO = "dropNo";
+    private static final String ARG_NAME = "customerName";
+    private static final String ARG_ADDRESS = "customerAddress";
+    private static final String ARG_PHONE = "customerPhone";
+    private static final String ARG_RISK = "riskLevel";
 
-    GPSTracker gps;
+    private final ExecutorService background = Executors.newSingleThreadExecutor();
+    private final Handler main = new Handler(Looper.getMainLooper());
 
-    Button startDelivery;
-    Button endDelivery;
+    private ImageView mapView;
+    private String address;
 
-    static private Geocoder mGeocoder;
-    String restoredCustomerAddress;
-
-    static double lat;
-    static double lng;
+    public static FragmentDetailsShipment newInstance(TripDetail trip) {
+        Bundle args = new Bundle();
+        args.putString(ARG_DROP_NO, trip.getDropNo());
+        args.putString(ARG_NAME, trip.getCustomerName());
+        args.putString(ARG_ADDRESS, trip.getCustAddress());
+        args.putString(ARG_PHONE, trip.getPhnNo());
+        args.putString(ARG_RISK, trip.getRiskLevel());
+        FragmentDetailsShipment fragment = new FragmentDetailsShipment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        requireActivity().setTitle(R.string.shipment_details);
+        Context themed = new ContextThemeWrapper(requireActivity(), R.style.AppTheme_LightMap);
+        View root = inflater.cloneInContext(themed).inflate(R.layout.fragment_details_shipment, container, false);
+        root.setBackgroundColor(Color.WHITE);
 
-        getActivity().setTitle("Shipment Details");
+        Bundle args = requireArguments();
+        final String dropNo = args.getString(ARG_DROP_NO);
+        address = args.getString(ARG_ADDRESS, "");
 
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.AppTheme_LightMap);
-        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+        ((TextView) root.findViewById(R.id.title)).setText(args.getString(ARG_NAME));
+        ((TextView) root.findViewById(R.id.tvCtAddress)).setText(address);
+        ((TextView) root.findViewById(R.id.tvCtPhoneNo)).setText(args.getString(ARG_PHONE));
+        ((TextView) root.findViewById(R.id.tvPriorityLevel))
+                .setText(getString(R.string.priority_level, capitalise(args.getString(ARG_RISK, ""))));
+        mapView = root.findViewById(R.id.ivMapSnapShot);
 
-        View rootView = localInflater.inflate(R.layout.fragment_details_shipment, container, false);
-        rootView.setBackgroundColor(Color.WHITE);
-
-
-        mGeocoder = new Geocoder(getActivity(), Locale.getDefault());
-
-        TextView title = (TextView) rootView.findViewById(R.id.title);
-        TextView address = (TextView) rootView.findViewById(R.id.tvCtAddress);
-        TextView phnNo = (TextView) rootView.findViewById(R.id.tvCtPhoneNo);
-
-        SharedPreferences prefs = getActivity().getSharedPreferences("shipment_details_pref", Context.MODE_PRIVATE);
-        String restoredCustomerName = prefs.getString("customerName", null);
-        restoredCustomerAddress = prefs.getString("customerAddress", null);
-        String restoredCustPhn = prefs.getString("custPhn", null);
-
-        if (restoredCustomerName != null) {
-          //  String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
-           // int idName = prefs.getInt("idName", 0); //0 is the default value.
-
-            System.out.println("@@@@@ shared pref info "+restoredCustomerName + "  "+restoredCustomerAddress+"  "+restoredCustPhn);
-
-            title.setText("" + restoredCustomerName);
-            address.setText("" + restoredCustomerAddress);
-            phnNo.setText(""+restoredCustPhn);
-        }
-
-
-
-        startDelivery = (Button) rootView.findViewById(R.id.btDeliveryStart);
-        endDelivery = (Button) rootView.findViewById(R.id.btDeliveryEnd);
-        gps = new GPSTracker(getActivity());
-
-        // check if GPS enabled
-        if (gps.canGetLocation()) {
-            srcLatitude = gps.getLatitude();
-            srcLongitude = gps.getLongitude();
-            Log.i("FragmentDetailsShipment", "@@@@ Location is Lat: " + srcLatitude + " Long: " + srcLongitude);
-        } else {
-            // can't get location
-            // GPS or Network is not enabled
-            // Ask user to enable GPS/network in settings
-            gps.showSettingsAlert();
-        }
-
-
-
-        convertAddress(restoredCustomerAddress);
-
-
-        String URI = "https://maps.googleapis.com/maps/api/staticmap?size=700x700&maptype=roadmap" +
-                "&markers=color:red%7C" + lat + "," + lng;
-        System.out.println("@@@@@ URI " + URI);
-
-       // final double destLat = 37.367904;
-        //final double destLat = lat;
-       // final double destLong = -121.920200;
-        //final double destLong = lng;
-
-        String uriNew = "https://maps.google.com/maps?saddr=" + srcLatitude
-                + "," + srcLongitude
-                + "&daddr="
-                + lat + "," + lng;
-
-        System.out.println("@@@@ new uri " + uriNew);
-
-
-        new GetStaticMapImage((ImageView) rootView.findViewById(R.id.ivMapSnapShot)).execute(URI);
-
-
-        startDelivery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-               /* String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%f,%f&daddr=%f,%f", srcLatitude, srcLongitude, destLat, destLong);
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                startActivity(intent);*/
-
-                //for testing
-                String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%f,%f(%s)&daddr=%f,%f (%s)", srcLatitude, srcLongitude, "Start Delivery", lat, lng, "Santanu Chakraborty");
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                startActivity(intent);
-
-                startDelivery.setVisibility(View.GONE);
-                endDelivery.setVisibility(View.VISIBLE);
-            }
+        final Button start = root.findViewById(R.id.btDeliveryStart);
+        final Button end = root.findViewById(R.id.btDeliveryEnd);
+        start.setOnClickListener(v -> {
+            openDirections();
+            start.setVisibility(View.GONE);
+            end.setVisibility(View.VISIBLE);
         });
+        end.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flContent, FragmentItemDelivery.newInstance(dropNo))
+                .addToBackStack(null)
+                .commit());
 
-
-        endDelivery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startDelivery.setVisibility(View.VISIBLE);
-                endDelivery.setVisibility(View.GONE);
-
-
-                Fragment fragment = new FragmentItemDelivery();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.flContent, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
-
-        return rootView;
+        loadMapPreview();
+        return root;
     }
 
+    /** Directions to the drop in Google Maps or the browser. Maps finds the driver's position itself, so this app needs no location permission. */
+    private void openDirections() {
+        try {
+            String destination = URLEncoder.encode(address, "UTF-8");
+            Uri uri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=" + destination);
+            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+        } catch (ActivityNotFoundException | java.io.UnsupportedEncodingException e) {
+            Toast.makeText(requireContext(), R.string.no_app_for_action, Toast.LENGTH_SHORT).show();
+        }
+    }
 
-    public void convertAddress(String address) {
-        if (address != null && !address.isEmpty()) {
+    /**
+     * Geocodes the address and loads a static map, off the UI thread.
+     * Skipped when no Maps API key is configured; the header image stays in place instead.
+     */
+    private void loadMapPreview() {
+        if (BuildConfig.MAPS_API_KEY.isEmpty() || address.isEmpty()) {
+            return;
+        }
+        final Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+        background.execute(() -> {
             try {
-                List<Address> addressList = mGeocoder.getFromLocationName(address, 1);
-                if (addressList != null && addressList.size() > 0) {
-                    lat = addressList.get(0).getLatitude();
-                    lng = addressList.get(0).getLongitude();
-
-                    System.out.println("@@@@ lat "+lat+" long "+lng);
+                List<Address> results = geocoder.getFromLocationName(address, 1);
+                if (results == null || results.isEmpty()) {
+                    return;
+                }
+                String url = "https://maps.googleapis.com/maps/api/staticmap?size=700x500&maptype=roadmap"
+                        + "&markers=color:red%7C" + results.get(0).getLatitude() + "," + results.get(0).getLongitude()
+                        + "&key=" + BuildConfig.MAPS_API_KEY;
+                try (InputStream in = new URL(url).openStream()) {
+                    final Bitmap map = BitmapFactory.decodeStream(in);
+                    main.post(() -> {
+                        if (isAdded() && map != null) {
+                            mapView.setImageBitmap(map);
+                        }
+                    });
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-            } // end catch
-        } // end if
-    } // end convertAddress
-
-
-
-
-
-    //class to get the image
-    private class GetStaticMapImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView image;
-
-        public GetStaticMapImage(ImageView image) {
-            this.image = image;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            Bitmap bmp = null;
-            try {
-                URL url = new URL(urls[0]);
-                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            } catch (Exception e) {
-                Log.i("Error", "@@@@@ Error " + urls[0]);
-                Log.i("Error", "@@@@@ Error msg " + e.getMessage());
-                e.printStackTrace();
+                Log.w(TAG, "Map preview unavailable", e);
             }
-            return bmp;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            System.out.println("@@@@@ result " + result);
-            image.setImageBitmap(result);
-        }
-
+        });
     }
 
+    private static String capitalise(String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        return value.substring(0, 1).toUpperCase(Locale.US) + value.substring(1);
+    }
 
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        background.shutdownNow();
+    }
 }
-
-
-
-
-
-

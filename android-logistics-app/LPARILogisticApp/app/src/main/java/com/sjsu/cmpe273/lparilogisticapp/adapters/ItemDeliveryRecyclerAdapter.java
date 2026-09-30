@@ -4,9 +4,9 @@ package com.sjsu.cmpe273.lparilogisticapp.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,10 +67,15 @@ public class ItemDeliveryRecyclerAdapter extends  RecyclerView.Adapter<ItemDeliv
         holder.tvInstructions.setText(fp.getInstructions());
 
 
-        if(fp.getIsScanned()) {
+        // Set both states explicitly: RecyclerView reuses rows, so a scanned row's colours would leak
+        if (fp.getIsScanned()) {
             holder.itemCard.setCardBackgroundColor(Color.parseColor("#99ffbb"));
-        }else{
-            //
+            holder.tvSpclIns.setText(R.string.item_scanned);
+            holder.tvSpclIns.setTextColor(Color.parseColor("#1B7F3B"));
+        } else {
+            holder.itemCard.setCardBackgroundColor(holder.defaultCardColor);
+            holder.tvSpclIns.setText(R.string.item_needs_scan);
+            holder.tvSpclIns.setTextColor(Color.parseColor("#E91E63"));
         }
 
         holder.item_feed = fp;
@@ -99,6 +104,7 @@ public class ItemDeliveryRecyclerAdapter extends  RecyclerView.Adapter<ItemDeliv
         public TextView tvDeliveryItem, tvCategoryDeliveryItem, tvInstructions, tvSpclIns;
 
         public CardView itemCard;
+        final android.content.res.ColorStateList defaultCardColor;
 
         public DeliveryItem item_feed;
 
@@ -112,6 +118,7 @@ public class ItemDeliveryRecyclerAdapter extends  RecyclerView.Adapter<ItemDeliv
             tvInstructions = (TextView) itemLayoutView.findViewById(R.id.tvInstructions);
             tvSpclIns = (TextView) itemLayoutView.findViewById(R.id.tvCtPhoneNo);
             itemCard = (CardView) itemLayoutView.findViewById(R.id.card_view_item_delivery);
+            defaultCardColor = itemCard.getCardBackgroundColor();
 
             itemLayoutView.setOnClickListener(new View.OnClickListener() {
                 @Override

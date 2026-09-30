@@ -39,6 +39,16 @@ flowchart LR
 - **Risk tiers**: shipments are sorted into **high alert**, **medium alert** and **low caution** so drivers and operations focus on the risky ones first.
 - **Loss analytics**: the backend surfaces **zones with reported package losses** and **users with repeated losses**, the patterns that separate real loss from fraud.
 
+## Screenshots
+
+The driver app (`android-logistics-app`), running on Android 14 in demo mode with fictional sample data.
+
+| Sign in | Drops by risk | Shipment details | Scan each package |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/logistics/01-login.png" width="200" alt="Login screen"> | <img src="docs/screenshots/logistics/02-high-alert-list.png" width="200" alt="High-alert drops"> | <img src="docs/screenshots/logistics/03-shipment-details.png" width="200" alt="Shipment details"> | <img src="docs/screenshots/logistics/04-package-scan.png" width="200" alt="Package checklist with one package scanned"> |
+| **Proof of delivery** | **Completed** | **Loss analytics** | **Navigation** |
+| <img src="docs/screenshots/logistics/05-signature.png" width="200" alt="Customer signature"> | <img src="docs/screenshots/logistics/06-completed.png" width="200" alt="Completed deliveries"> | <img src="docs/screenshots/logistics/07-analytics.png" width="200" alt="Analytics charts"> | <img src="docs/screenshots/logistics/08-navigation.png" width="200" alt="Navigation drawer"> |
+
 ## What's in this repository
 
 Five repositories from the project, combined here with their full commit history.
@@ -55,14 +65,18 @@ Five repositories from the project, combined here with their full commit history
 
 | Layer | Technology |
 |---|---|
-| Mobile | Android (Java), Retrofit + OkHttp, Gson, ZXing barcode scanner, SignaturePad, Android LocationManager, Google Maps, MPAndroidChart |
+| Mobile | Android (Java, AndroidX), Retrofit 2 + OkHttp 4, Gson, ZXing barcode scanner, SignaturePad, Google Maps, MPAndroidChart |
 | Backend | Java, JAX-RS (Jersey), MySQL, Maven |
 | Cloud | AWS Elastic Beanstalk (sign-up service); mocky.io mock APIs during development |
 | Web | HTML, CSS, JavaScript, Bootstrap admin templates |
 
 ## Status
 
-This was the capstone project for the M.S. in Software Engineering at San José State University (CMPE 295A/B), completed in 2016. It is kept here as a record of that work and is **not maintained**: the Android build targets 2016 SDKs, and the backend expects a local MySQL database.
+This was the capstone project for the M.S. in Software Engineering at San José State University (CMPE 295A/B), completed in 2016.
+
+**The driver app (`android-logistics-app`) was brought up to date in 2026** and builds and runs on current Android: Gradle 8.7, Android Gradle Plugin 8.5, target SDK 34, AndroidX, Retrofit 2. The 2016 backend and mock endpoints no longer exist, so it ships with a **demo mode** that answers API calls from bundled sample data; point it at a real server with one line in `local.properties`. The modernization also fixed real defects: passwords sent in plain-HTTP URLs and printed to the log, texts sent silently without the user seeing them, a Completed tab that listed *pending* drops, and a signature save that Android 10+ blocks. See [`android-logistics-app/README.md`](android-logistics-app/README.md).
+
+The other folders are kept as a record of that work and are **not maintained**: `android-delivery-app-v1` still targets 2016 SDKs, and the backend expects a local MySQL database.
 
 Looking back, the parts I'd change first are the ones that matter most at scale: move database credentials into configuration, replace the hard-coded alert tiers with a scoring model, and stream delivery events instead of polling for them. Real-time risk decisioning is what I went on to build professionally.
 
