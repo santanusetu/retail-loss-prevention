@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/tvCustomerNameDelivery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="PickUp"
+        android:textColor="#1976D2"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/noOfItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvCustomerNameDelivery"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="14dp"
+        android:text=" No of Shipments : 3 "
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvDeliveryDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/noOfItems"
+        android:layout_alignLeft="@id/noOfItems"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="4dp"
+        android:text="Door passcode is #5150. Needs to deliver in hand"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="italic"/>
+
+
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_below="@id/tvDeliveryDetails"
+        android:id="@+id/recycler_view_item_delivery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/btReadyToDeliver"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="24dp"
+        android:background="#BB2B82FF"
+        android:textColor="@color/white"
+        android:elevation="20dp"
+        android:text="Ready to Deliver"/>
+
+</RelativeLayout>

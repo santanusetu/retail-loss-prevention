@@ -1,0 +1,203 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:layout_margin="8dp"
+    card_view:cardElevation="10dp"
+    card_view:cardCornerRadius="2dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivMapSnapShot"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/header" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivMapSnapShot"
+            android:maxLines="3"
+            android:padding="8dp"
+            android:text="Santanu Chakraborty"
+            android:textColor="#222"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvCtAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:maxLines="3"
+            android:padding="8dp"
+            android:text="1 Washington Sq, San Jose, CA 95192"
+            android:textColor="#666"
+            android:textSize="16dp" />
+
+        <ImageView
+            android:id="@+id/ivPhnIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_below="@id/tvCtAddress"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/phoneicon"
+            android:paddingTop="4dp" />
+
+        <TextView
+            android:id="@+id/tvCtPhoneNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/ivPhnIcon"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@id/ivPhnIcon"
+            android:text="(669) 226-9988"
+            android:textColor="#0099CC"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+
+        <TextView
+            android:id="@+id/tvSpclIns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvCtPhoneNo"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="4dp"
+            android:text=" Special Instructions : "
+            android:textColor="#FF5722"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvSpclInsDetails1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSpclIns"
+            android:layout_toRightOf="@id/tvSpclIns"
+            android:layout_alignTop="@id/tvSpclIns"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:text=" 1. Signature Needed"
+            android:textColor="#0099CC"
+            android:textSize="14dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvSpclInsDetails2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSpclInsDetails1"
+            android:layout_alignLeft="@id/tvSpclInsDetails1"
+            android:layout_marginBottom="4dp"
+            android:text=" 2. Scan before Delivery"
+            android:textColor="#0099CC"
+            android:textSize="14dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvSpclInsDetails3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSpclInsDetails2"
+            android:layout_alignLeft="@id/tvSpclInsDetails2"
+            android:layout_marginBottom="5dp"
+            android:text=" 3. Notify Customer"
+            android:textColor="#0099CC"
+            android:textSize="14dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvPriorityLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_below="@id/tvSpclInsDetails3"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="4dp"
+            android:text=" Priority Level :                      Medium"
+            android:textColor="#E91E63"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/ivInstructionBack"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_alignBottom="@id/ivMapSnapShot"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="10dp"
+            android:background="#55000000" />
+
+        <TextView
+            android:id="@+id/tvDeliveryInstruction"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/ivInstructionBack"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="10dp"
+            android:text="Delivery Instruction"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tvDeliveryInstructionDetails"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvDeliveryInstruction"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="8dp"
+            android:text="This is a school. Use back door for direct access to kitchen"
+            android:textColor="#FFFFFF"
+            android:textSize="13dp" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/btDeliveryStart"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="24dp"
+        android:background="#BB2B82FF"
+        android:textColor="@color/white"
+        android:elevation="20dp"
+        android:text="Press To Start Delivery"/>
+
+    <Button
+        android:id="@+id/btDeliveryEnd"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="24dp"
+        android:background="#ff4d4d"
+        android:elevation="20dp"
+        android:text="End Delivery"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
+
+
+</RelativeLayout>

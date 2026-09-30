@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/mainMenu" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_first_fragment"
+            android:icon="@drawable/ic_one"
+            android:title="Shipments" />
+        <item
+            android:id="@+id/nav_second_fragment"
+            android:icon="@drawable/ic_two"
+            android:title="Completed" />
+        <item
+            android:id="@+id/nav_third_fragment"
+            android:icon="@drawable/ic_three"
+            android:title="OverAll Analytics" />
+    </group>
+
+    <group android:id="@+id/subMenu" android:checkableBehavior="single">
+        <item android:title="Others">
+            <menu>
+                <item
+                    android:icon="@drawable/ic_one"
+                    android:title="Settings" />
+                <item
+                    android:title="Sign Out" />
+            </menu>
+        </item>
+    </group>
+</menu>

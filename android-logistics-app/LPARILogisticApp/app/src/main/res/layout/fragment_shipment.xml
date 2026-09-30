@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:background="@color/green_header">
+
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/llGreen"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:background="@color/green_header" >-->
+
+        <!--<ImageView-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:paddingLeft="10dp"-->
+            <!--android:paddingTop="10dp"-->
+            <!--android:src="@drawable/down_arrow"-->
+            <!--android:background="@color/green_header"/>-->
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="10dp"-->
+            <!--android:text=" Low Precaution Delivery"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textStyle="bold"-->
+            <!--android:background="@color/green_header"/>-->
+    <!--</LinearLayout>-->
+
+    <ListView
+        android:id="@+id/lvListView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="#262626"
+        android:dividerHeight="3dp"
+        android:scrollbars="none"/>
+
+</LinearLayout>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlRow"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingBottom="4dp"
+    android:layout_margin="5dp">
+
+    <ImageView
+        android:id="@+id/ivDotIcon"
+        android:layout_width="15dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/dotscut" />
+
+
+    <TextView
+        android:id="@+id/tvDropNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/ivDotIcon"
+        android:padding="2dp"
+        android:paddingLeft="1dp"
+        android:layout_marginRight="5dp"
+        android:text="Drop 1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#33CC33" />
+
+    <include
+        layout="@layout/vertical_line"
+        android:layout_width="2dip"
+        android:layout_height="16dp"
+        android:layout_alignTop="@id/tvDropNo"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@id/tvDropNo" />
+
+    <TextView
+        android:id="@+id/tvDropTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/tvDropNo"
+        android:padding="2dp"
+        android:text="7:00 - 9:00 AM"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#33CC33" />
+
+    <!--<include
+        layout="@layout/vertical_line"
+        android:layout_width="2dip"
+        android:layout_height="15dp"
+        android:layout_alignTop="@id/tvDropTime"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/tvDropTime" />
+
+
+
+    <TextView
+        android:id="@+id/tvToteCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/tvDropTime"
+        android:padding="2dp"
+        android:text="4 Pkg"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#33CC33" />-->
+
+
+    <TextView
+        android:id="@+id/tvCustomerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tvDropNo"
+        android:layout_below="@id/tvDropNo"
+        android:layout_marginLeft="3dp"
+        android:text="Debra Baker Barille"
+        android:textColor="@color/blue_heading"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvCustomerAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tvCustomerName"
+        android:layout_below="@id/tvCustomerName"
+        android:layout_marginLeft="1dp"
+        android:textColor="@color/black"
+        android:text="1 Washington Sq, San Jose, CA 95192"
+        android:textSize="13sp" />
+
+   <!-- <TextView
+        android:id="@+id/tvCustomerAddressSpecialInstruc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tvCustomerAddress"
+        android:layout_below="@id/tvCustomerAddress"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:textColor="@color/black"
+        android:text="Center is located on cascade behind ..."
+        android:textSize="11sp" />-->
+
+    <ImageView
+        android:id="@+id/ivPhoneIcon"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_alignLeft="@id/tvCustomerAddress"
+        android:layout_below="@id/tvCustomerAddress"
+        android:layout_marginLeft="1dp"
+        android:background="@drawable/phoneicon"
+        android:paddingTop="4dp"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/tvPhoneNo1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivPhoneIcon"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/ivPhoneIcon"
+        android:text="(669) 226-9988"
+        android:textColor="#0099CC"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"/>
+
+<!--    <include
+        layout="@layout/vertical_line"
+        android:layout_width="2dip"
+        android:layout_height="15dp"
+        android:layout_alignTop="@id/tvPhoneNo1"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/tvPhoneNo1" />
+
+    <TextView
+        android:id="@+id/tvPhoneNo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/tvPhoneNo1"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/tvPhoneNo1"
+        android:text="(408)523 6655"
+        android:textColor="#0099CC" />-->
+
+    <ImageView
+        android:id="@+id/ivArrow"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="-5dp"
+        android:layout_alignTop="@id/tvCustomerName"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/photo_arrow" />
+
+    <TextView
+        android:id="@+id/tvNotify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivArrow"
+        android:layout_alignLeft="@id/ivArrow"
+        android:paddingTop="2dp"
+        android:layout_marginLeft="5dp"
+        android:text=" Notify "
+        android:textColor="#868686"
+        android:textSize="12sp"
+        android:textStyle="bold"/>
+
+    <include
+        layout="@layout/vertical_line"
+        android:layout_width="1dip"
+        android:layout_height="50dp"
+        android:layout_alignTop="@id/tvCustomerName"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@id/ivArrow" />
+
+   <!-- <include
+        layout="@layout/horizontal_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_alignLeft="@id/ivPhoneIcon"
+        android:layout_alignRight="@id/ivArrow"
+        android:layout_below="@id/ivPhoneIcon"
+        android:layout_marginLeft="-4dp"
+        android:layout_marginTop="10dp" />-->
+
+
+    <!--<ImageView
+        android:id="@+id/ivNotify"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignLeft="@id/ivPhoneIcon"
+        android:layout_below="@id/ivPhoneIcon"
+        android:layout_marginLeft="-2dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/msgicon" />-->
+
+    <!--<TextView
+        android:id="@+id/tvNotify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivNotify"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="8dp"
+        android:layout_toRightOf="@id/ivNotify"
+        android:paddingTop="2dp"
+        android:text="Notification "
+        android:textColor="#868686"
+        android:textSize="16sp"
+        android:textStyle="bold" />-->
+
+    <!--<include
+        android:id="@+id/lNotify"
+        layout="@layout/vertical_line"
+        android:layout_width="2dip"
+        android:layout_height="20dp"
+        android:layout_alignTop="@id/tvNotify"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@id/tvNotify" />-->
+
+    <!--<ImageView
+        android:id="@+id/ivOrderDetails"
+        android:layout_width="20dp"
+        android:layout_height="18dp"
+        android:layout_below="@id/ivPhoneIcon"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_toRightOf="@id/tvNotify"
+        android:background="@drawable/carticonnew" />
+
+    <TextView
+        android:id="@+id/tvOrderDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivOrderDetails"
+        android:layout_marginLeft="1dp"
+        android:layout_toRightOf="@id/ivOrderDetails"
+        android:paddingTop="2dp"
+        android:text=" Order Details "
+        android:textColor="#868686"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <include
+        layout="@layout/vertical_line"
+        android:layout_width="1dip"
+        android:layout_height="16dp"
+        android:layout_alignTop="@id/tvOrderDetails"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@id/tvOrderDetails" />-->
+
+    <!--<ImageView
+        android:id="@+id/ivCustHistory"
+        android:layout_width="25dp"
+        android:layout_height="22dp"
+        android:layout_below="@id/ivPhoneIcon"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="14dp"
+        android:layout_toRightOf="@id/tvNotify"
+        android:background="@drawable/clockicon" />-->
+
+   <!-- <TextView
+        android:id="@+id/tvCustomerHist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivCustHistory"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="-2dp"
+        android:layout_toRightOf="@id/ivCustHistory"
+        android:paddingTop="2dp"
+        android:text="Customer History"
+        android:textColor="#868686"
+        android:textSize="16sp"
+        android:textStyle="bold" />-->
+
+</RelativeLayout>
