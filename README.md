@@ -2,7 +2,7 @@
 
 <p align="center">
   <b>Loss Prevention Analytics for the Retail Industry</b><br>
-  A delivery-loss detection system: driver and customer apps that prove every hand-off,<br>
+  A delivery-loss detection system: a driver app that proves every hand-off,<br>
   a backend that flags risky shipments and zones, and dashboards for the operations team.
 </p>
 
@@ -45,9 +45,9 @@ Five repositories from the project, combined here with their full commit history
 
 | Folder | What it is | Built by |
 |---|---|---|
-| [`android-logistics-app`](android-logistics-app) | Driver app: trip list, shipments grouped by alert level, shipment details, barcode scanning, signature capture, GPS routing, analytics charts | Santanu Chakraborty |
-| [`android-customer-app`](android-customer-app) | Customer app: sign-up and login, delivery tracking, barcode confirmation and signature on receipt | Santanu Chakraborty |
-| [`backend-services`](backend-services) | JAX-RS REST services over MySQL: package status, delivery history, alert zones, red-alert users | Nagashruthi ([@nagashruthikb](mailto:nagashruthikb215@gmail.com)) |
+| [`android-logistics-app`](android-logistics-app) | The full driver app: trip list, shipments grouped by alert level (high, medium, low), shipment details, barcode scanning, signature capture, GPS routing, analytics charts, backend calls via Retrofit | Santanu Chakraborty |
+| [`android-delivery-app-v1`](android-delivery-app-v1) | First version of the delivery app: sign-up and login, shipment list, item-by-item delivery with slide-to-confirm, barcode scanning, signature capture, GPS | Santanu Chakraborty |
+| [`backend-services`](backend-services) | JAX-RS REST services over MySQL: package status, delivery history, alert zones, red-alert users | Nagashruthi |
 | [`admin-dashboard`](admin-dashboard) | Operations dashboard, built on the open-source *SuperAdmin* template | Santanu Chakraborty |
 | [`web-dashboard`](web-dashboard) | Web dashboard for the CMPE 295B demo, built on an open-source admin template | Santanu Chakraborty |
 
